@@ -1,0 +1,7 @@
+# Local .gitignore for Terraform files
+*.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform.tfstate.lock.info
+.terraform.lock.hcl
+

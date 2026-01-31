@@ -1,14 +1,19 @@
-resource "aws_acm_certificate" "cert" {
-  domain_name       = "abdulqayoom.co.uk"
-  validation_method = "DNS"
+data "aws_route53_zone" "main" {
+  name         = var.domain_name
+  private_zone = false
+}
 
-  tags = {
-    Environment = "test"
-  }
+resource "aws_acm_certificate" "cert" {
+  domain_name       = "tm.${var.domain_name}"
+  validation_method = "DNS"
 
   lifecycle {
     create_before_destroy = true
   }
+  tags = {
+    Name = "tm.${var.domain_name}-certificate"
+  }
+
 }
 
 resource "aws_route53_record" "cert_validation" {
@@ -25,5 +30,11 @@ resource "aws_route53_record" "cert_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.example.zone_id
+  zone_id         = data.aws_route53_zone.main.zone_id
 }
+
+resource "aws_acm_certificate_validation" "this" {
+  certificate_arn         = aws_acm_certificate.cert.arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
+}
+

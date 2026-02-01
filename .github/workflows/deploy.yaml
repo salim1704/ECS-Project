@@ -25,6 +25,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug paths
+        run: |
+          echo "PWD=$(pwd)"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          ls -la
+          find . -maxdepth 3 -type f -name "Dockerfile" -print
+
       - name: Build Docker image
         run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f docker/Dockerfile $GITHUB_WORKSPACE
 

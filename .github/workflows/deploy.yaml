@@ -25,19 +25,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug paths
-        run: |
-          echo "PWD=$(pwd)"
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          ls -la
-          find . -maxdepth 3 -type f -name "Dockerfile" -print
-
-      - name: Verify Go cmd path exists
-        run: |
-              ls -la app
-              ls -la app/cmd || true
-              find app -maxdepth 3 -type d -name "memos" -print
-
 
       - name: Build Docker image
         run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f Docker/Dockerfile .

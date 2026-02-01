@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f Docker/Dockerfile .
+        run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f docker/Dockerfile $GITHUB_WORKSPACE
 
 
       - name: Run Trivy vulnerability scanner

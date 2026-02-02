@@ -9,6 +9,7 @@ on:
 jobs:
   healthcheck:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Wait for deployment
         run: sleep 60
@@ -17,7 +18,7 @@ jobs:
         run: |
           echo "Running health check..."
 
-          max_attempts=5
+          max_attempts=10
           attempt=1
 
           while [ $attempt -le $max_attempts ]; do

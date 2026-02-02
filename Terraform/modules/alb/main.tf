@@ -23,7 +23,7 @@ resource "aws_lb_target_group" "ecs_tg" {
     interval            = 60
     timeout             = 3
     protocol            = "HTTP"
-    path                = "/"
+    path                = "/healthz"
     matcher             = "200"
   }
 

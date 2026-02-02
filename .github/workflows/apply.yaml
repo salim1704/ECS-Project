@@ -60,7 +60,7 @@ jobs:
         run: |
             echo "Running health check..."
 
-            max_attempts=5
+            max_attempts=10
             attempt=1
 
             while [ $attempt -le $max_attempts ]; do

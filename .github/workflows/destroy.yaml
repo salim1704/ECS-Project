@@ -29,12 +29,6 @@ jobs:
       TF_VAR_app_count: ${{ vars.APP_COUNT }}
 
     steps:
-      - name: Fail unless confirmed
-        run: |
-          if [ "${{ inputs.confirm }}" != "DESTROY" ]; then
-            echo "Confirmation failed. Type DESTROY to run this workflow."
-            exit 1
-          fi
 
       - name: Checkout code
         uses: actions/checkout@v4

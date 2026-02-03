@@ -18,8 +18,6 @@ Production-grade containerised application deployment on AWS using Docker, Terra
 
 <img width="1387" height="935" alt="image" src="https://github.com/user-attachments/assets/b9c972c6-78c5-4ad2-a66b-a64bbd5daee6" />
 
-
-
 **Infrastructure:**
 - **Compute:** ECS Fargate (serverless containers)
 - **Networking:** VPC with public/private subnets across 2 AZs
@@ -28,7 +26,7 @@ Production-grade containerised application deployment on AWS using Docker, Terra
 - **Security:** Private subnets, security groups, VPC endpoints
 - **DNS/SSL:** Route 53 + ACM certificate
 - **Registry:** Amazon ECR
-- **State:** S3 backend with versioning
+- **State:** S3 backend with versioning and DynamoDB state locking
 
 ---
 
@@ -36,7 +34,7 @@ Production-grade containerised application deployment on AWS using Docker, Terra
 ```
 ECS-PROJECT
 ├── docker/                      # Dockerfile
-├── terraform-bootstrap/         # S3 state bucket setup
+├── terraform-bootstrap/         # S3 state bucket + DynamoDB lock table
 ├── terraform/                   # Infrastructure (modular)
 │   └── modules/                 # vpc, alb, ecs, ecr, etc.
 ├── .github/workflows/           # CI/CD pipelines
@@ -106,6 +104,7 @@ http://localhost:8081
 - Destroyed manual resources
 - Translated to modular Terraform with 9 modules (VPC, ALB, ECS, ECR, etc.)
 - Implemented S3 backend for remote state with bootstrap process
+- Added DynamoDB table for state locking to prevent concurrent modifications
 - Added VPC endpoints for ECR, S3, CloudWatch, STS (eliminated NAT Gateway)
 
 **4. CI/CD Automation**
@@ -163,16 +162,20 @@ http://localhost:8081
 - ALB health checks
 - Auto-healing ECS service
 
+**State Management:**
+- S3 backend with versioning for state storage
+- DynamoDB table for state locking
+- Prevents concurrent Terraform operations
+
 ---
 
 ## Tech Stack
 
-- **Cloud:** AWS (ECS, ECR, ALB, VPC, Route 53, ACM, S3, CloudWatch)
+- **Cloud:** AWS (ECS, ECR, ALB, VPC, Route 53, ACM, S3, CloudWatch, DynamoDB)
 - **IaC:** Terraform
 - **Containers:** Docker
 - **CI/CD:** GitHub Actions
 - **Auth:** AWS OIDC
-- **App:** Go + React
 
 ---
 
@@ -183,6 +186,7 @@ http://localhost:8081
 - Tasks failed without ECR image → Proper workflow sequencing
 - Added VPC endpoints to eliminate NAT Gateway costs
 - Implemented Bootstrap for remote state management
+- Added DynamoDB state locking to prevent concurrent modification conflicts
 
 **Best Practises:**
 - Modular Terraform for reusability
@@ -190,5 +194,5 @@ http://localhost:8081
 - Separate workflows for infrastructure vs. application
 - Private subnets with VPC endpoints
 - OIDC authentication for CI/CD
+- State locking for safe concurrent operations
 - Manual infrastructure changes, automated deployments
-

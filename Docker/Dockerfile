@@ -1,3 +1,4 @@
+# Front-End Build
 FROM node:22-alpine AS frontend-build
 WORKDIR /app/web
 
@@ -7,6 +8,7 @@ RUN npm install -g pnpm && pnpm install
 COPY app/web/ ./
 RUN pnpm run release
 
+#Backend build
 FROM golang:1.25-alpine AS backend-build
 WORKDIR /app
 
@@ -15,6 +17,7 @@ COPY --from=frontend-build /app/server/router/frontend/dist ./server/router/fron
 
 RUN go build -o memos ./cmd/memos
 
+# Run-app
 FROM alpine:3.20
 WORKDIR /app
 

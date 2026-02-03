@@ -31,7 +31,7 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     defaults:
       run:
-        working-directory: ./Terraform
+        working-directory: ./terraform
 
     steps:
       - name: Checkout code

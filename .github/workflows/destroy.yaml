@@ -17,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./Terraform
+        working-directory: ./terraform
 
     env:
       TF_VAR_domain_name: ${{ vars.DOMAIN_NAME }}

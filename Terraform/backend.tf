@@ -4,5 +4,6 @@ terraform {
     key     = "ecs-project/terraform.tfstate"
     region  = "eu-west-2"
     encrypt = true
+    dynamodb_table = "memos-state-lock"
   }
 }

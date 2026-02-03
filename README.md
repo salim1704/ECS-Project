@@ -137,6 +137,13 @@ http://localhost:8081
 - Internet Gateway for public access
 - VPC endpoints for AWS services (no NAT Gateway)
 
+**ECS Service Health**
+
+The ECS service runs on Fargate and maintains the desired task count.  
+Tasks are registered with the Application Load Balancer target group and continuously monitored via health checks
+
+<img width="1881" height="757" alt="ecs_task" src="https://github.com/user-attachments/assets/cc214522-288d-487c-8bb4-18b2d633d2ca" />
+
 **Security:**
 - ECS tasks in private subnets (no public IPs)
 - Security groups with least-privilege
@@ -182,6 +189,7 @@ http://localhost:8081
 - OIDC authentication for CI/CD
 - State locking for safe concurrent operations
 - Manual infrastructure changes, automated deployments
+
 
 
 

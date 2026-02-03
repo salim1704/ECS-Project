@@ -1,25 +1,24 @@
-FROM node:22-alpine AS build
+FROM node:22-alpine AS frontend-build
 WORKDIR /app/web
-RUN npm install -g pnpm
 
 COPY app/web/package.json app/web/pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile
+RUN npm install -g pnpm && pnpm install
 
 COPY app/web/ ./
 RUN pnpm run release
 
-
-FROM golang:1.25-alpine AS go-build
+FROM golang:1.25-alpine AS backend-build
 WORKDIR /app
-COPY app/go.mod app/go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod go mod download
+
 COPY app/ ./
-COPY --from=build /app/server/router/frontend/dist ./server/router/frontend/dist
-RUN --mount=type=cache,target=/root/.cache/go-build go build -o /out/memos ./cmd/memos
+COPY --from=frontend-build /app/server/router/frontend/dist ./server/router/frontend/dist
 
-FROM alpine:3.20 
+RUN go build -o memos ./cmd/memos
+
+FROM alpine:3.20
 WORKDIR /app
-COPY --from=go-build /out/memos ./memos
+
+COPY --from=backend-build /app/memos ./memos
+
 EXPOSE 8081
 CMD ["./memos"]

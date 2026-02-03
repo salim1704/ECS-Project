@@ -12,7 +12,6 @@ env:
   ECS_CLUSTER: memos-cluster
   ECS_SERVICE: memos-container-service
   CONTAINER_NAME: memos-container
-  DESIRED_COUNT: 1
 
 jobs:
   build-and-deploy:
@@ -75,7 +74,7 @@ jobs:
             --cluster ${{ env.ECS_CLUSTER }} \
             --service ${{ env.ECS_SERVICE }} \
             --force-new-deployment \
-            --desired-count $DESIRED_COUNT \
+            --desired-count 1 \
             --region ${{ env.AWS_REGION }}
 
       - name: Deployment successful

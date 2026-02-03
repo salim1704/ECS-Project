@@ -1,3 +1,4 @@
+# ALB
 resource "aws_lb" "this" {
   name               = "alb-ecs"
   internal           = false
@@ -10,6 +11,7 @@ resource "aws_lb" "this" {
   }
 }
 
+# ECS_Target_Group
 resource "aws_lb_target_group" "ecs_tg" {
   name        = "ecs-target-group"
   port        = 8081
@@ -32,6 +34,7 @@ resource "aws_lb_target_group" "ecs_tg" {
   }
 }
 
+# HTTP Listener
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.this.arn
   port              = 80
@@ -48,6 +51,7 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+# HTTPS Listener
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.this.arn
   port              = 443

@@ -1,3 +1,4 @@
+# Endpoints Security Group
 resource "aws_security_group" "endpoint_sg" {
   name        = "endpoint_sg"
   description = "Security group for VPC endpoints"
@@ -24,6 +25,7 @@ resource "aws_security_group" "endpoint_sg" {
   }
 }
 
+# ALB Security Group
 resource "aws_security_group" "alb_sg" {
   name        = "alb_sg"
   description = "Security group for ALB"

@@ -1,3 +1,4 @@
+# ECS Cluster
 resource "aws_ecs_cluster" "this" {
   name = var.aws_ecs_cluster_name
 
@@ -6,6 +7,7 @@ resource "aws_ecs_cluster" "this" {
   }
 }
 
+#Cloudwatch Group
 resource "aws_cloudwatch_log_group" "ecs" {
   name              = "/ecs/${var.container_name}"
   retention_in_days = 7
@@ -15,6 +17,7 @@ resource "aws_cloudwatch_log_group" "ecs" {
   }
 }
 
+#Task Definition
 resource "aws_ecs_task_definition" "ecs_task" {
   family                   = "${var.container_name}-task"
   network_mode             = "awsvpc"
@@ -52,6 +55,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   }
 }
 
+# Cluster Service
 resource "aws_ecs_service" "this" {
   name            = "${var.container_name}-service"
   cluster         = aws_ecs_cluster.this.id

@@ -37,7 +37,7 @@ jobs:
 
 
       - name: Build Docker image
-        run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f docker/Dockerfile .
+        run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f Docker/Dockerfile .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

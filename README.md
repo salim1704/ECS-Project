@@ -88,10 +88,8 @@ http://localhost:8081
 **1. Containerisation**
 
 - Containerised the Memos application using a multi-stage Dockerfile
-- Reduced image size from ~1.44GB to ~99MB through multi-stage builds and layer caching
+- Reduced image size from ~1.44GB to ~200MB through multi-stage builds and layer caching
 - Tested the container locally on port 8081
-
-<img width="1568" height="315" alt="Screenshot 2026-01-27 090032" src="https://github.com/user-attachments/assets/5a5fd996-2aed-4e9d-b620-0316f1be213d" />
 
 **2. AWS Manual Setup (ClickOps)**
 
@@ -189,6 +187,7 @@ Tasks are registered with the Application Load Balancer target group and continu
 - OIDC authentication for CI/CD
 - State locking for safe concurrent operations
 - Manual infrastructure changes, automated deployments
+
 
 
 

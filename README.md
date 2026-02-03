@@ -5,6 +5,9 @@ Production-grade containerised application deployment on AWS using Docker, Terra
 
 **Live Demo:** https://tm.abdulqayoom.co.uk
 
+https://github.com/user-attachments/assets/a181d413-55f5-4175-a451-f32d3c0318f5
+
+
 **Key Features:**
 - Infrastructure as Code (Terraform)
 - Multi-Stage Docker Image
@@ -17,6 +20,7 @@ Production-grade containerised application deployment on AWS using Docker, Terra
 ## Architecture
 
 <img width="1387" height="935" alt="image" src="https://github.com/user-attachments/assets/b9c972c6-78c5-4ad2-a66b-a64bbd5daee6" />
+
 
 **Infrastructure:**
 - **Compute:** ECS Fargate (serverless containers)
@@ -84,10 +88,9 @@ http://localhost:8081
 
 **1. Containerisation**
 
-- Cloned the existing memos application
-- Created a Dockerfile
-- Multi-stage build and layer caching reduced build size from 1.44GB to 99MB
-- Tested container locally on port 8081
+- Containerised the Memos application using a multi-stage Dockerfile
+- Reduced image size from ~1.44GB to ~99MB through multi-stage builds and layer caching
+- Tested the container locally on port 8081
 
 <img width="1568" height="315" alt="Screenshot 2026-01-27 090032" src="https://github.com/user-attachments/assets/5a5fd996-2aed-4e9d-b620-0316f1be213d" />
 
@@ -101,45 +104,29 @@ http://localhost:8081
 
 **3. Infrastructure as Code (Terraform)**
 
-- Destroyed manual resources
-- Translated to modular Terraform with 9 modules (VPC, ALB, ECS, ECR, etc.)
-- Implemented S3 backend for remote state with bootstrap process
-- Added DynamoDB table for state locking to prevent concurrent modifications
-- Added VPC endpoints for ECR, S3, CloudWatch, STS (eliminated NAT Gateway)
+- Destroyed manual resources after validation
+- Rebuilt the entire stack using modular Terraform (VPC, ALB, ECS, IAM, Route 53, ACM, ECR, endpoints)
+- Implemented remote state storage in S3 using a bootstrap workflow
+- Added DynamoDB state locking to prevent concurrent Terraform operations
+- Configured VPC endpoints for ECR, S3, CloudWatch Logs, and STS, removing the need for a NAT Gateway
 
 **4. CI/CD Automation**
 
-- Configured GitHub OIDC with AWS IAM (no long-lived credentials)
-- Created 4 workflows:
-  - **Apply:** Provision infrastructure (36 resources)
-  - **Deploy:** Build Docker → Push to ECR → Update ECS
-  - **Health Check:** Validate deployment with retries
-  - **Destroy:** Teardown with confirmation
+- Infrastructure provisioning is triggered manually via a Terraform Apply workflow
+- On successful apply, downstream workflows are triggered automatically using `workflow_run`
+- Deployment pipeline:
+  - Build Docker image
+  - Security scan with Trivy
+  - Push image to Amazon ECR (`latest` + commit SHA)
+  - Force new ECS deployment to roll tasks in-place (service is not recreated)
+- A post-deployment health check workflow runs automatically to validate the live endpoint with retries
 
----
-
-## CI/CD Pipelines
-
-### 1. Terraform Apply
-- **Trigger:** Manual
-- **Actions:** Plan → Apply infrastructure
-- **Output:** AWS Resources created
-
-### 2. Deploy (Build & Push)
-- **Trigger:** Terraform Apply success
-- **Actions:** Build → Push to ECR → Update ECS
-- **Output:** New container deployed to ECR
-
-### 3. Health Check
-- **Trigger:** Terraform Apply success
-- **Actions:** Test endpoint with retries
-- **Output:** Deployment validation
-
-### 4. Terraform Destroy
-- **Trigger:** Manual
-- **Actions:** Teardown infrastructure
-- **Output:** All resources removed
-
+#### Workflows
+- **apply.yaml** (manual): Terraform init → validate → plan → apply
+- **deploy.yaml** (automatic): Triggered on successful apply; builds, scans, and deploys the application
+- **health-check.yaml** (automatic): Runs after deployment to validate application availability
+- **destroy.yaml** (manual): Tear down infrastructure
+  
 <img width="1422" height="376" alt="Screenshot 2026-02-02 193142" src="https://github.com/user-attachments/assets/6a2a2d31-0e21-47b3-ae56-201178fbffc4" />
 
 ---
@@ -179,14 +166,14 @@ http://localhost:8081
 
 ---
 
-## Lessons Learnt
+## Lessons Learned
 
-**Challenges:**
-- Separated infrastructure, deployment, and health checks into distinct workflows
-- Tasks failed without ECR image → Proper workflow sequencing
-- Added VPC endpoints to eliminate NAT Gateway costs
-- Implemented Bootstrap for remote state management
-- Added DynamoDB state locking to prevent concurrent modification conflicts
+- Importance of separating infrastructure provisioning from application deployment
+- ECS services require image availability before task creation
+- VPC endpoints removed NAT Gateway dependency and cost
+- Bootstrap + remote state avoids Terraform drift
+- State locking prevents concurrent modification issues
+
 
 **Best Practises:**
 - Modular Terraform for reusability
@@ -196,3 +183,4 @@ http://localhost:8081
 - OIDC authentication for CI/CD
 - State locking for safe concurrent operations
 - Manual infrastructure changes, automated deployments
+

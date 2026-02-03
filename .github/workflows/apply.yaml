@@ -2,6 +2,13 @@ name: Terraform
 
 on:
     workflow_dispatch:
+    push:
+        branches:
+            -main
+        paths:
+          - 'Terraform/**'                   
+          - 'terraform-bootstrap/**'          
+          - '.github/workflows/apply.yaml'
 
 permissions:
     id-token: write

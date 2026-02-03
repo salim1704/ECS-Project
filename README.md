@@ -16,7 +16,8 @@ Production-grade containerised application deployment on AWS using Docker, Terra
 
 ## Architecture
 
-<img width="1336" height="930" alt="image" src="https://github.com/user-attachments/assets/401f7ba7-22e4-4db8-a856-9e75dd83c881" />
+<img width="1387" height="935" alt="image" src="https://github.com/user-attachments/assets/b9c972c6-78c5-4ad2-a66b-a64bbd5daee6" />
+
 
 
 **Infrastructure:**
@@ -190,3 +191,4 @@ http://localhost:8081
 - Private subnets with VPC endpoints
 - OIDC authentication for CI/CD
 - Manual infrastructure changes, automated deployments
+

@@ -5,7 +5,14 @@ on:
     workflows: ["Terraform"]
     types: [completed]
   workflow_dispatch:
-    
+  push:
+    branches:
+      - main
+    paths:
+      - 'Docker/**'
+      - 'app/**'
+      - '.github/workflows/deploy.yaml'
+
 env:
   AWS_REGION: eu-west-2
   ECR_REPOSITORY: abdulqayoom-registry
@@ -31,7 +38,6 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f Docker/Dockerfile .
-
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
